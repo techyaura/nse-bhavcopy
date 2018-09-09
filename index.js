@@ -3,7 +3,7 @@ class BhavCopy {
     this.request = require("request");
     this.fs = require("fs");
     const { dir } = options;
-    this.customDir = dir !== "undefined" ? dir : "";
+    this.customDir = (dir && dir !== undefined && dir !== 'undefined') ? dir : "";
   }
 
   monthsCode() {
@@ -53,7 +53,7 @@ class BhavCopy {
   }
 
   createDir(dir) {
-    this.dir = this.customDir || dir;
+    this.baseDir = dir;
     const parts = dir.split("/");
     const partsLength = parts.length;
     let i = 0;
@@ -106,7 +106,7 @@ class BhavCopy {
           streamObj.on("response", response => {
             if (response.statusCode === 200) {
               streamObj.pipe(
-                this.fs.createWriteStream(this.dir + "/" + originalFileName)
+                this.fs.createWriteStream(this.baseDir + "/" + originalFileName)
               );
               return {
                 message: "Download successful"
@@ -185,7 +185,10 @@ class BhavCopy {
       } else {
         day = "";
       }
-      const baseDir = "NSE/" + year + "/" + month;
+      let baseDir = "NSE/" + year + "/" + month;
+      if(this.customDir) {
+        baseDir = this.customDir;
+      }
       this.createDir(baseDir);
       const generateFileNamesArray = this.generateFileNames({
         month,
