@@ -1,0 +1,29 @@
+{
+  "name": "nse-bhavcopy",
+  "version": "0.0.2",
+  "description": "nse-bhavcopy is a node js module for downloading NSE bhavcopy from NSE server.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "NSE",
+    "bhav",
+    "stock",
+    "nseindia",
+    "stockindia",
+    "bse",
+    "bsestock",
+    "stockmarket"
+  ],
+  "author": "techyaura",
+  "homepage": "https://github.com/techyaura/nse-bhavcopy",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/techyaura/nse-bhavcopy.git"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.88.0"
+  }
+}
