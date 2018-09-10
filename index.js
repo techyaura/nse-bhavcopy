@@ -1,6 +1,6 @@
 class BhavCopy {
   /**
-   * Construct a new AvaTaxClient
+   * Construct a new nse-bhavcopy client
    *
    * @constructor
    * @param string dir      Specify the directory for downloading files
