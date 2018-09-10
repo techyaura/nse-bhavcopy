@@ -1,12 +1,23 @@
 class BhavCopy {
+  /**
+   * Construct a new AvaTaxClient
+   *
+   * @constructor
+   * @param string dir      Specify the directory for downloading files
+   */
   constructor(options) {
     this.request = require("request");
     this.fs = require("fs");
     const { dir } = options;
-    this.customDir = (dir && dir !== undefined && dir !== 'undefined') ? dir : "";
+    this.customDir = dir && dir !== undefined && dir !== "undefined" ? dir : "";
   }
 
-  monthsCode() {
+  /**
+   * Generate months code array
+   *
+   * @return monthArray
+   */
+  __monthsCode() {
     const monthArray = [
       "JAN",
       "FEB",
@@ -24,11 +35,22 @@ class BhavCopy {
     return monthArray;
   }
 
-  yearsCode() {
-    return [2016, 2017, 2018];
+  /**
+   * Generate years code array
+   *
+   * @return yearsCode
+   */
+  __yearsCode() {
+    const yearsArray = [2016, 2017, 2018];
+    return yearsArray;
   }
 
-  daysCode() {
+  /**
+   * Generate days code array
+   *
+   * @return daysArray
+   */
+  __daysCode() {
     let daysArray = [];
     for (let i = 1; i <= 31; i++) {
       let day;
@@ -41,18 +63,29 @@ class BhavCopy {
     }
     return daysArray;
   }
-
-  appendZeroToDay(number) {
+  /**
+   * Generate days code array
+   *
+   * @param  number          day        The day for downloading bhavcopy
+   * @return newNum
+   */
+  __appendZeroToDay(day) {
     let newNum = "";
-    if (number < 10) {
-      newNum = "0" + parseInt(number);
+    if (day < 10) {
+      newNum = "0" + parseInt(day);
     } else {
-      newNum = number;
+      newNum = day;
     }
     return newNum;
   }
 
-  createDir(dir) {
+  /**
+   * Create dynamic directories if not exist
+   *
+   * @param  string          dir        The directory for downloading bhavcopy
+   * @return path
+   */
+  __createDir(dir) {
     this.baseDir = dir;
     const parts = dir.split("/");
     const partsLength = parts.length;
@@ -71,7 +104,15 @@ class BhavCopy {
     return path;
   }
 
-  generateFileNames(criteria) {
+  /**
+   * Generate files paths from NSE server
+   *
+   * @param  string          month        The month for downloading bhavcopy
+   * @param  string          year        The year for downloading bhavcopy
+   * @param  string          day       The day for downloading bhavcopy
+   * @return allFilesPathInMonth
+   */
+  __generateFileNames(criteria) {
     const { month, year, day } = criteria;
     const baseUrl = "https://nseindia.com/content/historical/EQUITIES/";
     const allFilesPathInMonth = [];
@@ -97,11 +138,17 @@ class BhavCopy {
     return allFilesPathInMonth;
   }
 
-  getBhavCopyFromNSE(fileName) {
+  /**
+   * Configure file url to get data from NSE server
+   *
+   * @param  string          fileName        The filename of downloading bhavcopy
+   * @return Promise
+   */
+  __getBhavCopyFromNSE(fileName) {
     if (fileName) {
       const parts = fileName.split("/");
       const originalFileName = parts.pop();
-      return this.callNSEforFile(fileName)
+      return this.__callNSEforFile(fileName)
         .then(streamObj => {
           streamObj.on("response", response => {
             if (response.statusCode === 200) {
@@ -128,7 +175,13 @@ class BhavCopy {
     }
   }
 
-  callNSEforFile(reqUrl) {
+  /**
+   * Call NSE server to get bhav copy
+   *
+   * @param  string          reqUrl        The NSE url for bhav copy
+   * @return Promise
+   */
+  __callNSEforFile(reqUrl) {
     const reqOpts = {
       url: reqUrl,
       method: "GET",
@@ -144,6 +197,14 @@ class BhavCopy {
     });
   }
 
+  /**
+   * Public access method to download bhav copies from NSE server
+   *
+   * @param  string          month        The month for downloading bhavcopy
+   * @param  string          year        The year for downloading bhavcopy
+   * @param  string          day       The day for downloading bhavcopy
+   * @return Promise
+   */
   download(reqObject) {
     return new Promise((resolve, reject) => {
       let { month, year, day } = reqObject;
@@ -151,7 +212,7 @@ class BhavCopy {
         month === undefined ||
         month === "" ||
         month === null ||
-        this.monthsCode().indexOf(month) === -1
+        this.__monthsCode().indexOf(month) === -1
       ) {
         return reject({
           message: "Invalid month name"
@@ -162,7 +223,7 @@ class BhavCopy {
         year === undefined ||
         year === "" ||
         year === null ||
-        this.yearsCode().indexOf(parseInt(year)) === -1
+        this.__yearsCode().indexOf(parseInt(year)) === -1
       ) {
         return reject({
           message: "Invalid year name"
@@ -175,8 +236,8 @@ class BhavCopy {
             message: "Invalid day specified"
           });
         }
-        const newday = this.appendZeroToDay(day);
-        if (this.daysCode().indexOf(newday) === -1) {
+        const newday = this.__appendZeroToDay(day);
+        if (this.__daysCode().indexOf(newday) === -1) {
           return reject({
             message: "Invalid day specified"
           });
@@ -186,11 +247,11 @@ class BhavCopy {
         day = "";
       }
       let baseDir = "NSE/" + year + "/" + month;
-      if(this.customDir) {
+      if (this.customDir) {
         baseDir = this.customDir;
       }
-      this.createDir(baseDir);
-      const generateFileNamesArray = this.generateFileNames({
+      this.__createDir(baseDir);
+      const generateFileNamesArray = this.__generateFileNames({
         month,
         year,
         day
@@ -201,12 +262,12 @@ class BhavCopy {
         generateFileNamesArray.length
       ) {
         generateFileNamesArray.forEach((item, index) => {
-          promiseArray.push(this.getBhavCopyFromNSE(item));
+          promiseArray.push(this.__getBhavCopyFromNSE(item));
         });
       }
       return Promise.all(promiseArray)
         .then(data => {
-          return resolve('Wait! Files are downloading...');
+          return resolve("Wait! Files are downloading...");
         })
         .catch(err => {
           return reject(err);

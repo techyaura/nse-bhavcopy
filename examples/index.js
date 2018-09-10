@@ -5,7 +5,7 @@ const request = new BhavCopy({
 
 request
   .download({
-    month: "MAY", // required (values acn be anything given below under Month CODES)
+    month: "AUG", // required (values acn be anything given below under Month CODES)
     year: 2016, // required (values acn be anything given below under YEAR CODES)
     day: 18 // optional (values can be anything in range: 1 - 31)
   })
