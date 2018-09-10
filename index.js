@@ -5,7 +5,7 @@ class BhavCopy {
    * @constructor
    * @param string dir      Specify the directory for downloading files
    */
-  constructor(options) {
+  constructor(options = {}) {
     this.request = require("request");
     this.fs = require("fs");
     const { dir } = options;

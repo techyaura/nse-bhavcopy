@@ -1,10 +1,10 @@
 {
   "name": "nse-bhavcopy",
   "version": "0.0.6",
-  "description": "nse-bhavcopy is a node js module for downloading NSE bhavcopy from NSE server.",
+  "description": "Node js module for downloading NSE bhavcopy from NSE server.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [
     "NSE",
@@ -25,5 +25,9 @@
   "license": "ISC",
   "dependencies": {
     "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
   }
 }
