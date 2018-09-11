@@ -34,11 +34,11 @@ describe("NSE: Bhavcopy", function() {
       });
   });
 
-  it("should fail, if year is not in [2016, 2017, 2018]", function(done) {
+  it("should fail, if year is not in [1994 -2018]", function(done) {
     request
       .download({
         month: "AUG",
-        year: 20168,
+        year: 2019,
         day: 18
       })
       .catch(err => {
@@ -91,23 +91,6 @@ describe("NSE: Bhavcopy", function() {
         expect(err).to.have.property("message");
         expect(err.message).to.be.equal("Invalid day specified");
         done();
-      });
-  });
-
-  it("should pass & download files, if data provided is correct", function(done) {
-    request
-      .download({
-        month: "OCT",
-        year: 2016,
-        day: 4
-      })
-      .then(data => {
-        expect(data).to.be.an("string");
-        expect(data).to.be.equal("Wait! Files are downloading...");
-        done();
-      })
-      .catch(err => {
-        done(err);
       });
   });
 });

@@ -46,12 +46,17 @@ request
   2017,
   2016
  ```
- 
+
+# Unit Test
+```
+npm test
+``` 
 
 # Features!
 
   - Download bhavcopy for a specified day
   - Or Download bhavcopy for entire month of a specified year
+  - Proper response message while downloading files (File availbale or not)
 
 ## Requirement
 

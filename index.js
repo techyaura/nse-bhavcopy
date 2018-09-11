@@ -12,6 +12,12 @@ class BhavCopy {
     this.customDir = dir && dir !== undefined && dir !== "undefined" ? dir : "";
   }
 
+  __getCurrentYear() {
+    const currentTime = new Date();
+    const year = currentTime.getFullYear();
+    return year;
+  }
+
   /**
    * Generate months code array
    *
@@ -41,7 +47,11 @@ class BhavCopy {
    * @return yearsCode
    */
   __yearsCode() {
-    const yearsArray = [2016, 2017, 2018];
+    const currentYear = this.__getCurrentYear();
+    const yearsArray = [];
+    for (let year = 1994; year <= currentYear; year++) {
+      yearsArray.push(year);
+    }
     return yearsArray;
   }
 
@@ -147,31 +157,54 @@ class BhavCopy {
   __getBhavCopyFromNSE(fileName) {
     if (fileName) {
       const parts = fileName.split("/");
-      const originalFileName = parts.pop();
-      return this.__callNSEforFile(fileName)
-        .then(streamObj => {
-          streamObj.on("response", response => {
-            if (response.statusCode === 200) {
-              streamObj.pipe(
-                this.fs.createWriteStream(this.baseDir + "/" + originalFileName)
-              );
-              return {
-                message: "Download successful"
-              };
+      let originalFileName = parts.pop();
+      return new Promise((resolve, reject) => {
+        return this.__callNSEforFile(fileName)
+          .then(streamObj => {
+            if (
+              streamObj &&
+              typeof streamObj === "object" &&
+              Object.keys(streamObj).length
+            ) {
+              streamObj.on("response", response => {
+                const fileDate = originalFileName
+                  .replace(".csv.zip", "")
+                  .replace("cm", "")
+                  .replace("bhav", "");
+                if (response.statusCode === 200) {
+                  streamObj.pipe(
+                    this.fs.createWriteStream(
+                      this.baseDir + "/" + originalFileName
+                    )
+                  );
+                  return resolve({
+                    message:
+                      originalFileName +
+                      " has been downloaded successfull for the date " +
+                      fileDate
+                  });
+                } else if (response.statusCode === 200) {
+                  return resolve({
+                    message: "Access Denied: for the file on date " + fileDate
+                  });
+                } else {
+                  return resolve({
+                    message:
+                      "Bhavcopy is not available for the date: " + fileDate
+                  });
+                }
+              });
             } else {
-              const fileNotFoundDate = fileName
-                .replace(".csv.zip", "")
-                .replace("cm", "")
-                .replace("bhav", "");
-              return {
-                download: "File Not Found on " + fileNotFoundDate
-              };
+              return reject({
+                message:
+                  "Server is temporarily down. Please try after some time."
+              });
             }
+          })
+          .catch(err => {
+            return Promise.reject(err);
           });
-        })
-        .catch(err => {
-          return Promise.reject(err);
-        });
+      });
     }
   }
 
@@ -218,7 +251,6 @@ class BhavCopy {
           message: "Invalid month name"
         });
       }
-
       if (
         year === undefined ||
         year === "" ||
@@ -267,7 +299,7 @@ class BhavCopy {
       }
       return Promise.all(promiseArray)
         .then(data => {
-          return resolve("Wait! Files are downloading...");
+          return resolve(data);
         })
         .catch(err => {
           return reject(err);
