@@ -183,7 +183,7 @@ class BhavCopy {
                       " has been downloaded successfull for the date " +
                       fileDate
                   });
-                } else if (response.statusCode === 200) {
+                } else if (response.statusCode === 403) {
                   return resolve({
                     message: "Access Denied: for the file on date " + fileDate
                   });

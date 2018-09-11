@@ -47,11 +47,6 @@ request
   2016
  ```
 
-# Unit Test
-```
-npm test
-``` 
-
 # Features!
 
   - Download bhavcopy for a specified day
@@ -64,6 +59,11 @@ nse-bhavcopy requires [Node.js](https://nodejs.org/) v8+ to run.
 
 ## Github
 [Github](https://github.com/techyaura/nse-bhavcopy)
+
+# Unit Test
+```
+npm test
+``` 
 
 ## Issues
 Please post your issues for further improvement or fixes if any: 
