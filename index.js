@@ -8,10 +8,33 @@ class BhavCopy {
   constructor(options = {}) {
     this.request = require("request");
     this.fs = require("fs");
-    const { dir } = options;
+    const { dir, type } = options;
     this.customDir = dir && dir !== undefined && dir !== "undefined" ? dir : "";
+    this.fileType =
+      type &&
+      type !== undefined &&
+      type !== "undefined" &&
+      this.__validateFileType().indexOf(type) !== -1
+        ? type
+        : "zip";
+    this.isMultiplesFile = false;
   }
 
+  /**
+   * Validate file types
+   *
+   * @return fileTypes
+   */
+  __validateFileType() {
+    const fileTypes = ["csv", "zip", "json"];
+    return fileTypes;
+  }
+
+  /**
+   * Get Current year
+   *
+   * @return year
+   */
   __getCurrentYear() {
     const currentTime = new Date();
     const year = currentTime.getFullYear();
@@ -145,6 +168,9 @@ class BhavCopy {
       const url = baseUrl + year + "/" + month + "/" + fileName;
       allFilesPathInMonth.push(url);
     }
+    if (allFilesPathInMonth.length > 1) {
+      this.isMultiplesFile = true;
+    }
     return allFilesPathInMonth;
   }
 
@@ -172,26 +198,59 @@ class BhavCopy {
                   .replace("cm", "")
                   .replace("bhav", "");
                 if (response.statusCode === 200) {
-                  streamObj.pipe(
-                    this.fs.createWriteStream(
-                      this.baseDir + "/" + originalFileName
-                    )
-                  );
-                  return resolve({
-                    message:
-                      originalFileName +
-                      " has been downloaded successfull for the date " +
-                      fileDate
-                  });
+                  const unzip = require("unzip");
+                  if (this.fileType === "csv") {
+                    streamObj.pipe(unzip.Extract({ path: this.baseDir }));
+
+                    return resolve({
+                      message:
+                        originalFileName +
+                        " has been downloaded successfull for the date " +
+                        fileDate
+                    });
+                  } else if (this.fileType === "json") {
+                    streamObj
+                      .pipe(unzip.Extract({ path: this.baseDir }))
+                      .on("close", async () => {
+                        try {
+                          const csv = require("csvtojson/v2");
+                          const csvPath =
+                            "./" +
+                            this.baseDir +
+                            "/" +
+                            originalFileName.replace(".zip", "");
+                          const jsonArray = await csv().fromFile(csvPath);
+                          this.fs.unlinkSync(csvPath);
+                          return resolve(jsonArray);
+                        } catch (err) {
+                          return reject(err);
+                        }
+                      });
+                  } else if (this.fileType === "zip") {
+                    streamObj.pipe(
+                      this.fs.createWriteStream(
+                        this.baseDir + "/" + originalFileName
+                      )
+                    );
+                    return resolve({
+                      message:
+                        originalFileName +
+                        " has been downloaded successfull for the date " +
+                        fileDate
+                    });
+                  }
                 } else if (response.statusCode === 403) {
                   return resolve({
                     message: "Access Denied: for the file on date " + fileDate
                   });
                 } else {
-                  return resolve({
-                    message:
-                      "Bhavcopy is not available for the date: " + fileDate
-                  });
+                  if (this.isMultiplesFile !== true) {
+                    return resolve({
+                      message:
+                        "Bhavcopy is not available for the date: " + fileDate
+                    });
+                  }
+                  return resolve({});
                 }
               });
             } else {
@@ -298,8 +357,9 @@ class BhavCopy {
         });
       }
       return Promise.all(promiseArray)
-        .then(data => {
-          return resolve(data);
+        .then(array => {
+          const newArray = array.filter(value => Object.keys(value).length !== 0);
+          return resolve(newArray);
         })
         .catch(err => {
           return reject(err);
