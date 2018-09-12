@@ -2,13 +2,13 @@
 
 [![NPM](https://nodei.co/npm/nse-bhavcopy.png??downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/nse-bhavcopy/)
 
-nse-bhavcopy is a node js module for downloading NSE bhavcopy from NSE server.
+Node-Js module for downloading NSE bhavcopy from NSE server.
 
 To use, follow the below instructions:
 
 ```
 const options = {
- type: 'json' // optional. if not specified, zip file will be downloaded valid TYPES: ['json', 'csv', 'zip']
+ type: 'json' // optional. if not specified, zip file will be downloaded. Valid TYPES: ['json', 'csv', 'zip']
  dir: "xxxx" // optional. if not specified, files will be downloaded under NSE folder
 };
 const request = new BhavCopy(options);
@@ -34,7 +34,6 @@ TYPES:
  'json',
  'csv',
  'zip'
-```
 
 MONTH CODES:
 "JAN",
@@ -54,30 +53,30 @@ YEAR CODES:
 2018,
 2017,
 2016
-
 ```
-# Features!
 
- - Download bhavcopy for a specified day
- - Or Download bhavcopy for entire month of a specified year
+## Features!
 
- # What's new in v1.0.0
-v1.0.0 now supports csv & json format as well. 
+- Download bhavcopy for a specified day
+- Or Download bhavcopy for entire month of a specified year
+
+## What's new in v1.0.0
+
+v1.0.0 now supports csv & json format as well.
 
 ## Requirement
 
 nse-bhavcopy requires [Node.js](https://nodejs.org/) v8+ to run.
 
 ## Github
+
 [Github](https://github.com/techyaura/nse-bhavcopy)
 
-# Unit Test
-```
+## Unit Test
 
 npm test
 
-```
 ## Issues
+
 Please post your issues for further improvement or fixes if any:
 [Github](https://github.com/techyaura/nse-bhavcopy/issues/new)
-```
