@@ -7,6 +7,7 @@ Node-Js module for downloading NSE bhavcopy from NSE server.
 To use, follow the below instructions:
 
 ```
+const BhavCopy = require('nse-bhavcopy');
 const options = {
  type: 'json' // optional. if not specified, zip file will be downloaded. Valid TYPES: ['json', 'csv', 'zip']
  dir: "xxxx" // optional. if not specified, files will be downloaded under NSE folder
