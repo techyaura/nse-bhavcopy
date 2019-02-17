@@ -7,9 +7,9 @@ const request = new BhavCopy(options);
 
 request
   .download({
-    month: "SEP", // required (values acn be anything given below under Month CODES)
-    year: 2018, // required (values acn be anything given below under YEAR CODES)
-    day: "" // optional (values can be anything in range: 1 - 31)
+    month: "FEB", // required (values acn be anything given below under Month CODES)
+    year: 2019, // required (values acn be anything given below under YEAR CODES)
+    day: 15 // optional (values can be anything in range: 1 - 31)
   })
   .then(data => {
     console.log(data); // Wait! Files are downloading...
