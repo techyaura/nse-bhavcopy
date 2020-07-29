@@ -1,6 +1,6 @@
 const BhavCopy = require("../index");
 const options = {
-   type: 'json'  // optional. if not specified, zip file will be downloaded valid TYPES: ['json', 'csv', 'zip']
+   type: 'zip'  // optional. if not specified, zip file will be downloaded valid TYPES: ['json', 'csv', 'zip']
   // dir: "xxxx" // optional. if not specified, files will be downloaded under NSE folder
 };
 const request = new BhavCopy(options);
