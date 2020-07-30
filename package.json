@@ -1,6 +1,6 @@
 {
   "name": "nse-bhavcopy",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Node js module for downloading NSE bhavcopy from NSE server.",
   "main": "index.js",
   "scripts": {
@@ -33,5 +33,8 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^7.2.0"
+  },
+  "resolutions": {
+    "fstream": ">=1.0.12"
   }
 }
